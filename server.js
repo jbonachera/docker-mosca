@@ -1,4 +1,12 @@
 var mosca = require('mosca')
+var winston = require('winston');
+var logger = new (winston.Logger)({
+        transports: [
+                  new (winston.transports.Console)({'timestamp':true})
+                ]
+});
+
+winston.level = 'info'
 
 var ascoltatore = {
           type: 'kafka',
@@ -18,17 +26,21 @@ var ascoltatore = {
 
 function server(settings) {
 
-  var server = new mosca.Server(settings, done);
-  function done() {}
-  return server
+    logger.log('info', 'starting MQTT broker');
+    var server = new mosca.Server(settings);
+    return server
 }
 
 var app = new server(settings);
 
 app.on('clientConnected', function(client) {
-    console.log('client connected', client.id);
+    logger.log('info', 'client connected ' + client.id);
 });
 
 app.on('ready', function() {
-  console.log('MQTT Server listening on port', settings.port)
+    logger.log('info', 'MQTT Server listening on port ' + settings.port)
+});
+
+app.on("error", function (err) {
+    logger.log('error', err);
 });
