@@ -20,33 +20,24 @@ var ascoltatore = {
           }
     }
 var settings = {
-            port: process.env.NODE_PORT || 1883
+    id: 'mosca',
+    port: process.env.NODE_PORT || 1883,
+    logger: { name: 'MoscaServer', level: 'debug' },
+
 }
 
-if (process.env.BACKEND != "memory") {
+if (process.env.ZK_STRING != undefined) {
     settings['backend'] = ascoltatore 
 };
 
 
 function server(settings) {
 
-    logger.log('info', 'starting MQTT broker');
-    if (process.env.BACKEND != "memory") {
-        logger.log('info', 'will use Kafka broker with zookeeper:' + process.env.ZK_STRING,)
-    }
     var server = new mosca.Server(settings, function(){});
     return server
 }
 
 var app = new server(settings);
-
-app.on('clientConnected', function(client) {
-    logger.log('info', 'client connected ' + client.id);
-});
-
-app.on('ready', function() {
-    logger.log('info', 'MQTT Server listening on port ' + settings.port)
-});
 
 app.on("error", function (err) {
     logger.log('error', err);
