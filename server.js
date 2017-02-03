@@ -11,7 +11,7 @@ logger.level = 'info'
 var ascoltatore = {
           type: 'kafka',
           kafka: require("kafka-node"),
-          connectionString: process.env.ZK_STRING,
+          connectionString: "172.20.0.42:2181",
           clientId: "ascoltatori",
           groupId: "ascoltatori",
           defaultEncoding: "utf8",
@@ -34,12 +34,16 @@ if (process.env.ZK_STRING != undefined) {
 
 function server(settings) {
 
-    var server = new mosca.Server(settings, function(){});
+    var server = new mosca.Server(settings);
     return server
 }
 
 var app = new server(settings);
 
 app.on("error", function (err) {
-    logger.log('error', err);
+    logger.log('info', err);
+});
+
+app.on("ready", function () {
+    logger.log('info', 'mosca started!');
 });
