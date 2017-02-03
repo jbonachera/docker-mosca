@@ -23,6 +23,10 @@ var settings = {
     id: 'mosca',
     port: process.env.NODE_PORT || 1883,
     logger: { name: 'MoscaServer', level: 'debug' },
+    stats: false,
+    publishNewClient: false,
+    publishClientDisconnect: false,
+    publishSubscriptions: false,
 
 }
 
