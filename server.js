@@ -1,8 +1,20 @@
 var mosca = require('mosca')
 
-var settings = {
+var ascoltatore = {
+          type: 'kafka',
+          kafka: require("kafka-node"),
+          connectionString: process.env.ZK_STRING,
+          clientId: "ascoltatori",
+          groupId: "ascoltatori",
+          defaultEncoding: "utf8",
+          encodings: {
+            image: "buffer"
+          }
+}
+  , settings = {
             port: process.env.NODE_PORT || 1883,
-        };
+            backend: ascoltatore };
+
 
 function server(settings) {
 
@@ -13,9 +25,8 @@ function server(settings) {
 
 var app = new server(settings);
 
-app.on('published', function(packet, client) {
-  if (packet.topic.indexOf('$SYS') === 0) return; // doesn't print stats info
-    console.log('ON PUBLISHED', packet.payload.toString(), 'on topic', packet.topic);
+app.on('clientConnected', function(client) {
+    console.log('client connected', client.id);
 });
 
 app.on('ready', function() {
