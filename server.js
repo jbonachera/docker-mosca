@@ -31,6 +31,9 @@ if (process.env.BACKEND != "memory") {
 function server(settings) {
 
     logger.log('info', 'starting MQTT broker');
+    if (process.env.BACKEND != "memory") {
+        logger.log('info', 'will use Kafka broker with zookeeper:' + process.env.ZK_STRING,)
+    }
     var server = new mosca.Server(settings, function(){});
     return server
 }
