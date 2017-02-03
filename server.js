@@ -27,6 +27,7 @@ var settings = {
 }
 
 if (process.env.ZK_STRING != undefined) {
+    logger.log('info', 'will use zookeeper at '+process.env.ZK_STRING)
     settings['backend'] = ascoltatore 
 };
 
