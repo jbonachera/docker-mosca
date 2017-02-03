@@ -6,7 +6,7 @@ var logger = new (winston.Logger)({
                 ]
 });
 
-winston.level = 'info'
+logger.level = 'info'
 
 var ascoltatore = {
           type: 'kafka',
@@ -18,16 +18,20 @@ var ascoltatore = {
           encodings: {
             image: "buffer"
           }
+    }
+var settings = {
+            port: process.env.NODE_PORT || 1883
 }
-  , settings = {
-            port: process.env.NODE_PORT || 1883,
-            backend: ascoltatore };
+
+if (process.env.BACKEND != "memory") {
+    settings['backend'] = ascoltatore 
+};
 
 
 function server(settings) {
 
     logger.log('info', 'starting MQTT broker');
-    var server = new mosca.Server(settings);
+    var server = new mosca.Server(settings, function(){});
     return server
 }
 
